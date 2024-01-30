@@ -47,8 +47,10 @@ class SearchFragment : Fragment() {
 
 
             btnSearch.setOnClickListener {
+                saveQuery()
                 val query = etSearch.text.toString()
-                if(query.isEmpty()) Snackbar.make(view,"내용을 입력해주세요.",Snackbar.LENGTH_SHORT).show() else searchImage(query)
+                if (query.isEmpty()) Snackbar.make(view, "내용을 입력해주세요.", Snackbar.LENGTH_SHORT)
+                    .show() else searchImage(query)
                 root.hideKeyboardInput()
             }
         }
@@ -77,6 +79,7 @@ class SearchFragment : Fragment() {
         binding.fbContactFloating.setOnClickListener {
             binding.rvSearch.smoothScrollToPosition(0)
         }
+        loadQuery()
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -98,5 +101,19 @@ class SearchFragment : Fragment() {
         val inputMethodManager =
             context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(binding.etSearch.windowToken, 0)
+    }
+
+    //검색어 저장
+    private fun saveQuery() {
+        val pref = requireContext().getSharedPreferences("pref", 0)
+        val edit = pref.edit()
+        edit.putString("title", binding.etSearch.text.toString())
+        edit.apply()
+    }
+
+    //저장된 검색어 출력
+    private fun loadQuery() {
+        val pref = requireContext().getSharedPreferences("pref", 0)
+        binding.etSearch.setText(pref.getString("title", ""))
     }
 }

@@ -10,10 +10,10 @@ private const val AUTH_HEADER = "KakaoAK 2329abeaffea6dfd3626b67e6b5044ba"
 
 interface KakaoApi {
     @GET("image")
-     suspend fun searchImage(
+    suspend fun searchImage(
         @Query("query") query: String,
         @Query("sort") sort: String,
         @Query("page") page: Int,
-        @Query("size") size: Int
-    ) : ImageSearchResponse
+        @Query("size") size: Int,
+    ): ImageSearchResponse
 }

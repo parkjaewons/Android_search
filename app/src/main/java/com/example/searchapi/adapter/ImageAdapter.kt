@@ -12,10 +12,12 @@ import com.example.searchapi.data.Document
 import com.example.searchapi.databinding.ItemListBinding
 import java.text.SimpleDateFormat
 
-class ImageAdapter(var imageList : MutableList<Document>) : RecyclerView.Adapter<ImageAdapter.ImageViewHolder>() {
+class ImageAdapter(var imageList: MutableList<Document>) :
+    RecyclerView.Adapter<ImageAdapter.ImageViewHolder>() {
     interface ItemClick {
         fun onClick(view: View, position: Document)
     }
+
     var itemClick: ItemClick? = null
 
     inner class ImageViewHolder(private val binding: ItemListBinding) :
@@ -29,7 +31,7 @@ class ImageAdapter(var imageList : MutableList<Document>) : RecyclerView.Adapter
                 tvTime.text = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(document.datetime)
                 itemView.setOnClickListener {
                     itemClick?.onClick(it, document)
-                    if(ivLike.visibility == INVISIBLE) {
+                    if (ivLike.visibility == INVISIBLE) {
                         ivLike.visibility = VISIBLE
                     } else {
                         ivLike.visibility = INVISIBLE

@@ -45,5 +45,4 @@ object Retrofit {
             .client(createOkHttpClient())
             .build()
     }
-
 }
