@@ -17,5 +17,6 @@ data class Document(
     val siteName: String,
     @SerializedName("doc_url")
     val docUrl: String,
-    val datetime: Date
+    val datetime: Date,
+    var isLike: Boolean = false
 )

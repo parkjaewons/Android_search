@@ -1,5 +1,6 @@
 package com.example.searchapi.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.searchapi.R
 import com.example.searchapi.adapter.ImageAdapter
 import com.example.searchapi.databinding.FragmentSearchBinding
 import com.example.searchapi.retrofit.Retrofit
@@ -40,17 +40,17 @@ class SearchFragment : Fragment() {
         with(binding) {
             rvSearch.adapter = imageAdapter
             rvSearch.layoutManager = GridLayoutManager(context, 2)
-
             btnSearch.setOnClickListener {
-                root.hideKeyboardInput()
+
                 val query = etSearch.text.toString()
                 searchImage(query)
 
+                root.hideKeyboardInput()
             }
-
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun searchImage(query: String) {
         CoroutineScope(Dispatchers.Main).launch {
             val response = Retrofit.api.searchImage(query, "accuracy", 1, 80)
@@ -58,13 +58,14 @@ class SearchFragment : Fragment() {
 
             with(imageAdapter) {
                 imageList.clear()
-                imageList.addAll(response.documents)
+                val addAll = imageList.addAll(response.documents)
                 notifyDataSetChanged()
             }
         }
     }
+    //키보드 내리기
     private fun View.hideKeyboardInput() {
-        val keyBoard = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        keyBoard.hideSoftInputFromWindow(windowToken, 0)
+        val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(binding.etSearch.windowToken, 0)
     }
 }

@@ -37,8 +37,8 @@ class MainActivity : AppCompatActivity() {
             adapter = viewPager2Adatper
         }
         val iconList = ArrayList<Drawable?>()
-        iconList.add(ContextCompat.getDrawable(this, R.drawable.ic_launcher_foreground))
-        iconList.add(ContextCompat.getDrawable(this, R.drawable.ic_launcher_foreground))
+        iconList.add(ContextCompat.getDrawable(this, R.drawable.search))
+        iconList.add(ContextCompat.getDrawable(this, R.drawable.box))
 
 
         //ViewPager, TabLayout 연결
