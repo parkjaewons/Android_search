@@ -13,6 +13,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:clipToOutline="true"
+        android:scaleType="centerCrop"
+        android:background="@drawable/image_round"
         tools:src="@drawable/ic_launcher_background" />
 
 

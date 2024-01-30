@@ -25,7 +25,6 @@ class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
     private val imageAdapter by lazy { ImageAdapter(mutableListOf()) }
-    private var isLike = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

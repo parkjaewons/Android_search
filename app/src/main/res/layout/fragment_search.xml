@@ -17,21 +17,24 @@
         <EditText
             android:id="@+id/et_Search"
             android:layout_width="280dp"
-            android:layout_height="40dp"
+            android:layout_height="44dp"
+            android:background="@drawable/edit_text_round"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btn_search"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:hint="@string/search_hint" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_search"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
-            android:layout_marginStart="12dp"
-            android:background="#FFC107"
-            android:text="검색"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/button_round"
+            android:text="@string/search"
             android:textColor="@color/white"
             android:textStyle="bold"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/et_Search"
@@ -64,8 +67,8 @@
         android:layout_marginBottom="32dp"
         android:backgroundTint="#FFFFC107"
         android:src="@drawable/ic_contact_floating_24dp"
-        android:tint="@color/white"
         android:visibility="gone"
+        app:tint="@color/white"
         app:borderWidth="0dp"
         app:fabCustomSize="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
