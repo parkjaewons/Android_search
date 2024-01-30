@@ -8,9 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.searchapi.fragment.LockerFragment
 import com.example.searchapi.R
-import com.example.searchapi.fragment.SearchFragment
 import com.example.searchapi.adapter.ViewPager2Adapter
 import com.example.searchapi.databinding.ActivityMainBinding
+import com.example.searchapi.fragment.SearchFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity() {

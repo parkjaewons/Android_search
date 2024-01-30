@@ -5,12 +5,17 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 import java.util.Date
 
-@Parcelize
 data class Document(
+    val collection: String,
+    @SerializedName("thumbnail_url")
+    val thumbnailUrl: String,
+    @SerializedName("image_url")
+    val imageUrl: String,
+    val width: Int,
+    val height: Int,
     @SerializedName("display_sitename")
-    val siteName : String,
-    val collection : String,
-    val image_url : String,
-    val thumbnail_url : String,
-    val datetime : Date?
-) : Parcelable
+    val siteName: String,
+    @SerializedName("doc_url")
+    val docUrl: String,
+    val datetime: Date
+)

@@ -18,11 +18,11 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tl_navigation_view"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
-        app:tabIconTint="@color/white"
-        app:tabTextColor="@color/white"
+        android:layout_height="70dp"
+        android:background="#FFC107"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:tabIconTint="@color/white"
+        app:tabTextColor="@color/white" />
 </androidx.constraintlayout.widget.ConstraintLayout>
