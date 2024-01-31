@@ -57,10 +57,16 @@ class LockerFragment(private val likeImage: MutableList<Document>) : Fragment() 
             binding.rvLocker.smoothScrollToPosition(0)
         }
     }
+
     private fun initView(){
         with(binding) {
             rvLocker.adapter = imageAdapter
             rvLocker.layoutManager = GridLayoutManager(context, 2)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initView()
     }
 }
