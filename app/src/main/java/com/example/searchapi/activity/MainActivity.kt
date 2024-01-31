@@ -9,11 +9,13 @@ import androidx.core.content.ContextCompat
 import com.example.searchapi.fragment.LockerFragment
 import com.example.searchapi.R
 import com.example.searchapi.adapter.ViewPager2Adapter
+import com.example.searchapi.data.Document
 import com.example.searchapi.databinding.ActivityMainBinding
 import com.example.searchapi.fragment.SearchFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity() {
+    private var likedImages = mutableListOf<Document>()
 
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,8 +31,8 @@ class MainActivity : AppCompatActivity() {
     private fun initViewPager() {
         //ViewPager2 Adapter 셋팅
         val viewPager2Adatper = ViewPager2Adapter(this)
-        viewPager2Adatper.addFragment(SearchFragment())
-        viewPager2Adatper.addFragment(LockerFragment())
+        viewPager2Adatper.addFragment(SearchFragment(likedImages))
+        viewPager2Adatper.addFragment(LockerFragment(likedImages))
 
         //Adapter 연결
         binding.vpViewpagerMain.apply {

@@ -21,19 +21,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class SearchFragment : Fragment() {
+class SearchFragment(private val likeImage: MutableList<Document>) : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
-    private val imageAdapter by lazy { ImageAdapter(mutableListOf()) }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private val imageAdapter by lazy { ImageAdapter(mutableListOf(), likeImage) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -41,19 +37,7 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        with(binding) {
-            rvSearch.adapter = imageAdapter
-            rvSearch.layoutManager = GridLayoutManager(context, 2)
-
-
-            btnSearch.setOnClickListener {
-                saveQuery()
-                val query = etSearch.text.toString()
-                if (query.isEmpty()) Snackbar.make(view, "내용을 입력해주세요.", Snackbar.LENGTH_SHORT)
-                    .show() else searchImage(query)
-                root.hideKeyboardInput()
-            }
-        }
+        initView(view)
 
         // 플로팅 버튼
         val fadeIn = AlphaAnimation(0f, 1f).apply { duration = 500 }
@@ -92,6 +76,22 @@ class SearchFragment : Fragment() {
                 imageList.clear()
                 val addAll = imageList.addAll(response.documents)
                 notifyDataSetChanged()
+            }
+        }
+    }
+
+    private fun initView(view: View) {
+        with(binding) {
+            rvSearch.adapter = imageAdapter
+            rvSearch.layoutManager = GridLayoutManager(context, 2)
+
+
+            btnSearch.setOnClickListener {
+                saveQuery()
+                val query = etSearch.text.toString()
+                if (query.isEmpty()) Snackbar.make(view, "내용을 입력해주세요.", Snackbar.LENGTH_SHORT)
+                    .show() else searchImage(query)
+                root.hideKeyboardInput()
             }
         }
     }
