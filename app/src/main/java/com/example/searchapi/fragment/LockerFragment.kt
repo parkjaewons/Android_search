@@ -1,7 +1,8 @@
 package com.example.searchapi.fragment
 
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
+import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,11 +10,9 @@ import android.view.animation.AlphaAnimation
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.searchapi.R
 import com.example.searchapi.adapter.ImageAdapter
 import com.example.searchapi.data.Document
 import com.example.searchapi.databinding.FragmentLockerBinding
-import com.example.searchapi.databinding.FragmentSearchBinding
 
 class LockerFragment(private val likeImage: MutableList<Document>) : Fragment() {
     private var _binding: FragmentLockerBinding? = null
@@ -61,12 +60,21 @@ class LockerFragment(private val likeImage: MutableList<Document>) : Fragment() 
     private fun initView(){
         with(binding) {
             rvLocker.adapter = imageAdapter
-            rvLocker.layoutManager = GridLayoutManager(context, 2)
+            rvLocker.layoutManager = GridLayoutManagerWrapper(context, 2)
         }
     }
 
     override fun onResume() {
         super.onResume()
         initView()
+    }
+    class GridLayoutManagerWrapper: GridLayoutManager {
+        constructor(context: Context?, spanCount: Int) : super(context, spanCount) {}
+        constructor(context: Context, spanCount: Int, orientation: Int, reverseLayout: Boolean) : super(context, spanCount, orientation, reverseLayout) {}
+        constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {}
+
+        override fun supportsPredictiveItemAnimations(): Boolean {
+            return false
+        }
     }
 }

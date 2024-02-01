@@ -3,6 +3,7 @@ package com.example.searchapi.fragment
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -83,7 +84,7 @@ class SearchFragment(private val likeImage: MutableList<Document>) : Fragment() 
     private fun initView(view: View) {
         with(binding) {
             rvSearch.adapter = imageAdapter
-            rvSearch.layoutManager = GridLayoutManager(context, 2)
+            rvSearch.layoutManager = GridLayoutManagerWrapper(context, 2)
 
 
             btnSearch.setOnClickListener {
@@ -115,5 +116,14 @@ class SearchFragment(private val likeImage: MutableList<Document>) : Fragment() 
     private fun loadQuery() {
         val pref = requireContext().getSharedPreferences("pref", 0)
         binding.etSearch.setText(pref.getString("title", ""))
+    }
+    class GridLayoutManagerWrapper: GridLayoutManager {
+        constructor(context: Context?, spanCount: Int) : super(context, spanCount) {}
+        constructor(context: Context, spanCount: Int, orientation: Int, reverseLayout: Boolean) : super(context, spanCount, orientation, reverseLayout) {}
+        constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {}
+
+        override fun supportsPredictiveItemAnimations(): Boolean {
+            return false
+        }
     }
 }

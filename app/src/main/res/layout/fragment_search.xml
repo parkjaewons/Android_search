@@ -44,7 +44,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="650dp"
+        android:layout_height="710dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +53,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_search"
             android:layout_width="match_parent"
-            android:layout_height="650dp"
+            android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -70,7 +70,7 @@
         android:layout_marginBottom="32dp"
         android:backgroundTint="#FFFFC107"
         android:src="@drawable/ic_contact_floating_24dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:tint="@color/white"
         app:borderWidth="0dp"
         app:fabCustomSize="40dp"

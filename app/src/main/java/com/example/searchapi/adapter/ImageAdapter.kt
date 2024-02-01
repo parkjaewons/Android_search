@@ -1,6 +1,7 @@
 package com.example.searchapi.adapter
 
 import android.opengl.Visibility
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.INVISIBLE
@@ -8,6 +9,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.searchapi.R
 import com.example.searchapi.data.Document
 import com.example.searchapi.databinding.ItemListBinding
 import java.text.SimpleDateFormat
@@ -25,24 +27,31 @@ class ImageAdapter(
 
     inner class ImageViewHolder(private val binding: ItemListBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(document: Document) {
+        fun bind(document: Document, position: Int) {
             with(binding) {
                 Glide.with(itemView)
                     .load(document.thumbnailUrl)
                     .into(ivThumbnail)
                 tvTitle.text = document.siteName
                 tvTime.text = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(document.datetime)
+
                 itemView.setOnClickListener {
-                    itemClick?.onClick(document, adapterPosition)
-                    if (ivLike.visibility == INVISIBLE) {
-                        document.isLike
-                        likeImage.add(document)
+                    val item = imageList[position]
+                    item.isLike = !item.isLike
+                    Log.d("bb", "gg : ${item.isLike}")
+                    if (item.isLike) {
+                        item.isLike
+                        likeImage.add(item)
                         ivLike.visibility = VISIBLE
+                        Log.d("cc", "cc : $item")
                     } else {
-                        !document.isLike
-                        likeImage.remove(document)
+                        !item.isLike
+                        likeImage.remove(item)
                         ivLike.visibility = INVISIBLE
+                        Log.d("dd", "dd : $item")
                     }
+                    notifyItemInserted(position)
+                    notifyItemRemoved(position)
                 }
             }
         }
@@ -63,7 +72,7 @@ class ImageAdapter(
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         val document = imageList[position]
-        holder.bind(document)
+        holder.bind(document, position)
     }
 
     override fun getItemCount(): Int {
