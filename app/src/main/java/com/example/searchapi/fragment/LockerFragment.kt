@@ -57,7 +57,7 @@ class LockerFragment(private val likeImage: MutableList<Document>) : Fragment() 
         }
     }
 
-    private fun initView(){
+    private fun initView() {
         with(binding) {
             rvLocker.adapter = imageAdapter
             rvLocker.layoutManager = GridLayoutManagerWrapper(context, 2)
@@ -68,11 +68,9 @@ class LockerFragment(private val likeImage: MutableList<Document>) : Fragment() 
         super.onResume()
         initView()
     }
-    class GridLayoutManagerWrapper: GridLayoutManager {
-        constructor(context: Context?, spanCount: Int) : super(context, spanCount) {}
-        constructor(context: Context, spanCount: Int, orientation: Int, reverseLayout: Boolean) : super(context, spanCount, orientation, reverseLayout) {}
-        constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {}
 
+    class GridLayoutManagerWrapper(context: Context?, spanCount: Int) :
+        GridLayoutManager(context, spanCount) {
         override fun supportsPredictiveItemAnimations(): Boolean {
             return false
         }

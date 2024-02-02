@@ -3,8 +3,6 @@ package com.example.searchapi.fragment
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.util.AttributeSet
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,12 +18,15 @@ import com.example.searchapi.retrofit.Retrofit
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SearchFragment(private val likeImage: MutableList<Document>) : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
     private val imageAdapter by lazy { ImageAdapter(mutableListOf(), likeImage) }
+    private var loadingDialog = CircleProgressDialog()
     private var page = 1
 
     override fun onCreateView(
@@ -40,6 +41,7 @@ class SearchFragment(private val likeImage: MutableList<Document>) : Fragment() 
         super.onViewCreated(view, savedInstanceState)
 
         initView(view)
+        loadQuery()
 
         // 플로팅 버튼
         val fadeIn = AlphaAnimation(0f, 1f).apply { duration = 500 }
@@ -63,37 +65,30 @@ class SearchFragment(private val likeImage: MutableList<Document>) : Fragment() 
                     }
                 }
             })
+        }
+        binding.fbContactFloating.setOnClickListener {
+            binding.rvSearch.smoothScrollToPosition(0)
+        }
 
-            fbContactFloating.setOnClickListener {
-                rvSearch.smoothScrollToPosition(0)
-            }
-
-            rvSearch.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                @SuppressLint("NotifyDataSetChanged")
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    // 마지막 스크롤된 항목 위치
-                    val query = etSearch.text.toString()
-                    val lastVisibleItemPosition =
-                        (recyclerView.layoutManager as GridLayoutManagerWrapper?)!!.findLastCompletelyVisibleItemPosition()
+        binding.rvSearch.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val query = binding.etSearch.text.toString()
+                val lastVisibleItemPosition =
+                    (recyclerView.layoutManager as GridLayoutManagerWrapper).findLastCompletelyVisibleItemPosition()
+                val itemTotalCount = recyclerView.adapter!!.itemCount - 1
+                if (lastVisibleItemPosition == itemTotalCount) {
+                    showLoading() //로딩
+                    page += 1 //스크롤이 최하단이면 다음페이지 출력
                     CoroutineScope(Dispatchers.Main).launch {
-                        // 항목 전체 개수
-                        val itemTotalCount = recyclerView.adapter!!.itemCount - 1
-                        if (lastVisibleItemPosition == itemTotalCount) {
-                            page += 1 //스크롤이 최하단이면 다음페이지 출력
-                            Log.d("SCROLL", "last Position..."); //스크롤 하단인지 확인
-                            Log.d("SCROLL", "page: $page"); //페이지 잘 넘어가는지 확인
-                            val response = Retrofit.api.searchImage(query, "accuracy", page, 80)
-                            with(imageAdapter) {
-                                imageList.addAll(response.documents)
-                                notifyDataSetChanged()
-                            }
-                        }
+                        val response = Retrofit.api.searchImage(query, "accuracy", page, 80)
+                        imageAdapter.imageList.addAll(response.documents)
+                        imageAdapter.notifyDataSetChanged()
                     }
                 }
-            })
-        }
-        loadQuery()
+            }
+        })
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -148,6 +143,15 @@ class SearchFragment(private val likeImage: MutableList<Document>) : Fragment() 
         GridLayoutManager(context, spanCount) {
         override fun supportsPredictiveItemAnimations(): Boolean {
             return false
+        }
+    }
+
+    //Circle Progress Bar
+    private fun showLoading() {
+        CoroutineScope(Dispatchers.Main).launch {
+            loadingDialog.show(parentFragmentManager, loadingDialog.tag)
+            withContext(Dispatchers.Default) { delay(1500) }
+            loadingDialog.dismiss()
         }
     }
 }
