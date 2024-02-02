@@ -70,7 +70,7 @@
         android:layout_marginBottom="32dp"
         android:backgroundTint="#FFFFC107"
         android:src="@drawable/ic_contact_floating_24dp"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:tint="@color/white"
         app:borderWidth="0dp"
         app:fabCustomSize="40dp"

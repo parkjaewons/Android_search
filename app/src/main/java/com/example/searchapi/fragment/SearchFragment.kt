@@ -26,6 +26,7 @@ class SearchFragment(private val likeImage: MutableList<Document>) : Fragment() 
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
     private val imageAdapter by lazy { ImageAdapter(mutableListOf(), likeImage) }
+    private var page = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,25 +45,53 @@ class SearchFragment(private val likeImage: MutableList<Document>) : Fragment() 
         val fadeIn = AlphaAnimation(0f, 1f).apply { duration = 500 }
         val fadeOut = AlphaAnimation(1f, 0f).apply { duration = 500 }
         var isTop = true
-        binding.rvSearch.addOnScrollListener(object :
-            RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (!binding.rvSearch.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    binding.fbContactFloating.startAnimation(fadeOut)
-                    binding.fbContactFloating.visibility = View.GONE
-                    isTop = true
-                } else {
-                    if (isTop) {
-                        binding.fbContactFloating.visibility = View.VISIBLE
-                        binding.fbContactFloating.startAnimation(fadeIn)
-                        isTop = false
+        with(binding) {
+            rvSearch.addOnScrollListener(object :
+                RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if (!rvSearch.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        fbContactFloating.startAnimation(fadeOut)
+                        fbContactFloating.visibility = View.GONE
+                        isTop = true
+                    } else {
+                        if (isTop) {
+                            fbContactFloating.visibility = View.VISIBLE
+                            fbContactFloating.startAnimation(fadeIn)
+                            isTop = false
+                        }
                     }
                 }
+            })
+
+            fbContactFloating.setOnClickListener {
+                rvSearch.smoothScrollToPosition(0)
             }
-        })
-        binding.fbContactFloating.setOnClickListener {
-            binding.rvSearch.smoothScrollToPosition(0)
+
+            rvSearch.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                @SuppressLint("NotifyDataSetChanged")
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    // 마지막 스크롤된 항목 위치
+                    val query = etSearch.text.toString()
+                    val lastVisibleItemPosition =
+                        (recyclerView.layoutManager as GridLayoutManagerWrapper?)!!.findLastCompletelyVisibleItemPosition()
+                    CoroutineScope(Dispatchers.Main).launch {
+                        // 항목 전체 개수
+                        val itemTotalCount = recyclerView.adapter!!.itemCount - 1
+                        if (lastVisibleItemPosition == itemTotalCount) {
+                            page += 1 //스크롤이 최하단이면 다음페이지 출력
+                            Log.d("SCROLL", "last Position..."); //스크롤 하단인지 확인
+                            Log.d("SCROLL", "page: $page"); //페이지 잘 넘어가는지 확인
+                            val response = Retrofit.api.searchImage(query, "accuracy", page, 80)
+                            with(imageAdapter) {
+                                imageList.addAll(response.documents)
+                                notifyDataSetChanged()
+                            }
+                        }
+                    }
+                }
+            })
         }
         loadQuery()
     }
@@ -71,8 +100,6 @@ class SearchFragment(private val likeImage: MutableList<Document>) : Fragment() 
     private fun searchImage(query: String) {
         CoroutineScope(Dispatchers.Main).launch {
             val response = Retrofit.api.searchImage(query, "accuracy", 1, 80)
-            Log.d("aa", "response: $response")
-
             with(imageAdapter) {
                 imageList.clear()
                 val addAll = imageList.addAll(response.documents)
@@ -85,7 +112,6 @@ class SearchFragment(private val likeImage: MutableList<Document>) : Fragment() 
         with(binding) {
             rvSearch.adapter = imageAdapter
             rvSearch.layoutManager = GridLayoutManagerWrapper(context, 2)
-
 
             btnSearch.setOnClickListener {
                 saveQuery()
@@ -117,11 +143,9 @@ class SearchFragment(private val likeImage: MutableList<Document>) : Fragment() 
         val pref = requireContext().getSharedPreferences("pref", 0)
         binding.etSearch.setText(pref.getString("title", ""))
     }
-    class GridLayoutManagerWrapper: GridLayoutManager {
-        constructor(context: Context?, spanCount: Int) : super(context, spanCount) {}
-        constructor(context: Context, spanCount: Int, orientation: Int, reverseLayout: Boolean) : super(context, spanCount, orientation, reverseLayout) {}
-        constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {}
 
+    class GridLayoutManagerWrapper(context: Context?, spanCount: Int) :
+        GridLayoutManager(context, spanCount) {
         override fun supportsPredictiveItemAnimations(): Boolean {
             return false
         }
